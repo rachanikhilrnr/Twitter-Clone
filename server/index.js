@@ -24,6 +24,34 @@ app.get('/users', (req,res) => {
     })
 })
 
+app.get('/users/:id', async (req,res) => {
+    const val = req.params.id;
+    const userData = await userModel.findById(val);
+    if(!userData){
+        return res.json({"message":"User Not found"});
+    }
+    res.json(userData);
+})
+
+app.delete('/users/:id', async (req,res) => {
+    const val = req.params.id;
+    const userDelete = await userModel.findByIdAndDelete(val);
+    if(!userDelete){
+        return res.json({"Message":"User not found"});
+    }
+    res.json({"Message":"User Deleted Successfully"});
+})
+
+app.patch('/users/:id', async (req,res) => {
+    const val = req.params.id;
+    const updateData = req.body;
+    const userUpdate = await userModel.findByIdAndUpdate(val,updateData);
+    if(!userUpdate){
+        return res.json({"Message":"User Not Found"});
+    }
+    res.json(userUpdate);
+})
+
 app.post('/users', async (req,res) => {
     const profile = req.body;
     const newUser = new userModel(profile);
