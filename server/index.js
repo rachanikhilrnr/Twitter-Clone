@@ -1,64 +1,64 @@
-const express = require('express');
-const mongoose = require('mongoose');
+const express = require('express')
+const mongoose = require('mongoose')
 const cors = require('cors')
 
-const userModel = require("./models/Users");
+const userModel = require('./models/users')
 
-const app = express();
+const app = express()
 app.use(cors());
 app.use(express.json());
 
 mongoose.connect(
-    "mongodb+srv://21955a1206:nikhil1528@project.cyg4qu7.mongodb.net/Twitter?retryWrites=true&w=majority&appName=Project"
-);
+    "mongodb+srv://21955a1206:nikhil1528@project.cyg4qu7.mongodb.net/Data?retryWrites=true&w=majority&appName=Project"
+)
 
-app.get('/', (req,res) => {
-    res.json("HELLOWORLD");
+app.listen(5000,() => {
+    console.log("Server is running in port no 5000");
 })
 
-app.get('/users', (req,res) => {
-    userModel.find({}).then(function(users){
-        res.json(users);
-    }).catch(function(err){
+app.get('/getUsers', (req,res) => {
+    userModel.find({}).then(function(x){
+        res.json(x);
+    }).catch(function(x){
         res.json(err);
     })
 })
 
-app.get('/users/:id', async (req,res) => {
-    const val = req.params.id;
-    const userData = await userModel.findById(val);
-    if(!userData){
-        return res.json({"message":"User Not found"});
-    }
-    res.json(userData);
-})
-
-app.delete('/users/:id', async (req,res) => {
-    const val = req.params.id;
-    const userDelete = await userModel.findByIdAndDelete(val);
-    if(!userDelete){
+app.get('/getUsers/:id',async (req,res) => {
+    const data = req.params.id;
+    const user = await userModel.findById(data);
+    if(!user){
         return res.json({"Message":"User not found"});
     }
-    res.json({"Message":"User Deleted Successfully"});
+    res.json(user);
 })
 
-app.patch('/users/:id', async (req,res) => {
-    const val = req.params.id;
-    const updateData = req.body;
-    const userUpdate = await userModel.findByIdAndUpdate(val,updateData);
-    if(!userUpdate){
-        return res.json({"Message":"User Not Found"});
+app.delete('/getUsers/:id', async (req,res) => {
+    const id = req.params.id;
+    const deleteUser = await userModel.findByIdAndDelete(id);
+    if(!deleteUser){
+        return res.json({"Message":"User not found"});
     }
-    res.json(userUpdate);
+    res.json({"Message":"User Deleted"});
 })
 
-app.post('/users', async (req,res) => {
-    const profile = req.body;
-    const newUser = new userModel(profile);
+app.patch('/getUsers/:id',async (req,res) => {
+    const id = req.params.id;
+    const data = req.body;
+    const updateUser = await userModel.findByIdAndUpdate(id,data);
+    if(!updateUser){
+        res.json({"Message":"User not found"});
+    }
+    res.json({"Message":"User Updated Successfully"});
+})
+
+app.post('/getUsers', async (req,res) => {
+    const user = req.body;
+    const newUser = new userModel(user);
     await newUser.save();
-    res.json(newUser);
+    res.json({"Username":newUser._id});
 })
 
-app.listen(5000,() => {
-    console.log("Server is running in port number 5000");
+app.get('/',(req,res) => {
+    res.send("You are at the root");
 })
