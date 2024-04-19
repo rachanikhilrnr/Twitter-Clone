@@ -5,7 +5,12 @@ const cors = require('cors')
 const userModel = require('./models/users')
 
 const app = express()
-app.use(cors());
+app.use(cors({
+    origin: ["https://twitter-clone-liard-sigma.vercel.app/"],
+    methods:["POST","GET"],
+    credentials:true
+    }
+));
 app.use(express.json());
 
 mongoose.connect(
